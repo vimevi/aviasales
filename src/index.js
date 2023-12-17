@@ -1,19 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
 import App from './components/app/App';
+
+import { Provider } from 'react-redux';
+import store from './redux';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<React.StrictMode>
-		<App />
+		<Provider store={store}>
+			<App />
+		</Provider>
 	</React.StrictMode>
 );
 
-// const a = async () => {
-// 	const res = await fetch(`https://front-test.dev.aviasales.ru/search`);
-// 	const data = await res.json();
-// 	console.log(data);
-// 	return data;
-// };
+const getSearchId = async () => {
+	try {
+		const res = await fetch(`https://aviasales-test-api.kata.academy/search`);
+		const data = await res.json();
+		console.log(data);
+		console.log('Search ID:', data.searchId);
 
-// a(); // 13.12 ошибка 502 | Тестовый запрос
+		const ticketsResponse = await fetch(
+			`https://aviasales-test-api.kata.academy/tickets?searchId=${data.searchId}`
+		);
+		console.log('Tickets:', ticketsResponse);
+
+		return ticketsResponse;
+	} catch (error) {
+		console.error('Error fetching data:', error);
+		throw error;
+	}
+};
+
+getSearchId();

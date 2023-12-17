@@ -1,46 +1,60 @@
 import React, { useState } from 'react';
 import Checkbox from './checkbox';
+// import reducer from '../../redux/reducer';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+// import store from './index'
+
+import * as actions from '../../redux/actions';
 import classes from './filter.module.scss';
 
 export default function Filter() {
-	const [allChecked, setAllChecked] = useState(true);
-	const [noStopsChecked, setNoStopsChecked] = useState(true);
-	const [oneStopChecked, setOneStopChecked] = useState(true);
-	const [twoStopsChecked, setTwoStopsChecked] = useState(true);
-	const [threeStopsChecked, setThreeStopsChecked] = useState(true); // перенести логику в resux
+	const dispatch = useDispatch();
+
+	const isChecked = useSelector((store) => store.allChecked);
+	const isNoStops = useSelector((store) => store.noStopsChecked);
+	const isOneStop = useSelector((store) => store.oneStopChecked);
+	const isTwoStops = useSelector((store) => store.twoStopsChecked);
+	const isThreeStops = useSelector((store) => store.threeStopsChecked);
 
 	return (
 		<aside>
 			<h2 className={classes.title}>Количество пересадок</h2>
 			<form>
 				<Checkbox
-					checked={allChecked}
-					onChange={() => setAllChecked((c) => !c)}
+					checked={
+						!isNoStops || !isOneStop || !isTwoStops || !isThreeStops
+							? false
+							: isChecked
+					}
+					// onChange={() => setAllChecked((c) => !c)}
+					onChange={() => dispatch(actions.allChecked())}
 				>
 					Все
 				</Checkbox>
 				<Checkbox
-					checked={noStopsChecked}
-					onChange={() => setNoStopsChecked((c) => !c)}
+					checked={isNoStops}
+					onChange={() => dispatch(actions.noStopsChecked())}
+					// onChange={() => setNoStopsChecked((c) => !c)}
 				>
 					Без пересадок
 				</Checkbox>
 				<Checkbox
-					checked={oneStopChecked}
-					onChange={() => setOneStopChecked((c) => !c)}
+					checked={isOneStop}
+					onChange={() => dispatch(actions.oneStopChecked())}
 				>
 					1 пересадка
 				</Checkbox>
 				<Checkbox
-					checked={twoStopsChecked}
-					onChange={() => setTwoStopsChecked((c) => !c)}
+					onChange={() => dispatch(actions.twoStopChecked())}
+					checked={isTwoStops}
 				>
 					2 пересадки
 				</Checkbox>
 				<Checkbox
-					checked={threeStopsChecked}
-					onChange={() => setThreeStopsChecked((c) => !c)}
+					checked={isThreeStops}
+					onChange={() => dispatch(actions.threeStopChecked())}
 				>
 					3 пересадки
 				</Checkbox>

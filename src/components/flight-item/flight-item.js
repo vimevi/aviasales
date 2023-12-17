@@ -4,12 +4,14 @@ import InfoFlightItem from '../info-flight-Item';
 import classes from './flight-item.module.scss';
 import logos7 from '../../assets/img/S7-logo.png';
 
-export default function FlightItem() {
+export default function FlightItem({ price }) {
+
 	return (
 		<li>
 			<div className={classes.item_inner}>
 				<div className={classes.top_content}>
-					<span className={classes.price}>13400 Р</span>
+					<span className={classes.price}>{price} Р</span>
+					{/* price из ticlets array} */}
 					<span className={classes.company_logo}>
 						<img src={logos7} alt="" />
 					</span>
