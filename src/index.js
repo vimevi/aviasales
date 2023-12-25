@@ -15,23 +15,3 @@ root.render(
 	</React.StrictMode>
 );
 
-const getSearchId = async () => {
-	try {
-		const res = await fetch(`https://aviasales-test-api.kata.academy/search`);
-		const data = await res.json();
-		console.log(data);
-		console.log('Search ID:', data.searchId);
-
-		const ticketsResponse = await fetch(
-			`https://aviasales-test-api.kata.academy/tickets?searchId=${data.searchId}`
-		);
-		console.log('Tickets:', ticketsResponse);
-
-		return ticketsResponse;
-	} catch (error) {
-		console.error('Error fetching data:', error);
-		throw error;
-	}
-};
-
-getSearchId();

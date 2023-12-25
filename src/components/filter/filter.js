@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import Checkbox from './checkbox';
 // import reducer from '../../redux/reducer';
 import { useDispatch } from 'react-redux';
@@ -28,7 +28,6 @@ export default function Filter() {
 							? false
 							: isChecked
 					}
-					// onChange={() => setAllChecked((c) => !c)}
 					onChange={() => dispatch(actions.allChecked())}
 				>
 					Все
@@ -36,7 +35,6 @@ export default function Filter() {
 				<Checkbox
 					checked={isNoStops}
 					onChange={() => dispatch(actions.noStopsChecked())}
-					// onChange={() => setNoStopsChecked((c) => !c)}
 				>
 					Без пересадок
 				</Checkbox>
