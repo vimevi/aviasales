@@ -10,18 +10,26 @@ export default function Tabs() {
 	return (
 		<section className={classes.tabs}>
 			<nav>
-				<div
-					className={currentFilter === 'cheapest' ? classes.active : ''}
+				<button
+					className={
+						currentFilter === 'cheapest'
+							? `${classes.button} ${classes.active}`
+							: classes.button
+					}
 					onClick={() => dispatch(cheapest())}
 				>
 					Самый Дешевый
-				</div>
-				<div
-					className={currentFilter === 'shortest' ? classes.active : ''}
+				</button>
+				<button
+					className={
+						currentFilter === 'shortest'
+							? `${classes.button} ${classes.active}`
+							: classes.button
+					}
 					onClick={() => dispatch(shortest())}
 				>
 					Самый быстрый
-				</div>
+				</button>
 			</nav>
 		</section>
 	);

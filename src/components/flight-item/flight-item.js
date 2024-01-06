@@ -87,7 +87,7 @@ const FlightItem = ({ price, carrier, segments }) => {
 const getPluralSuffix = (count) => {
   if (count === 1) {
     return 'ка';
-  } else if (count === 0 || (count > 1 && count < 5)) {
+  } else if (count === 1 || (count > 1 && count < 5)) {
     return 'ки';
   } else {
     return 'ок';
