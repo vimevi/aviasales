@@ -1,5 +1,4 @@
 const defaultState = {
-	cash: 0,
 	allChecked: true,
 	noStopsChecked: true,
 	oneStopChecked: true,
@@ -7,11 +6,9 @@ const defaultState = {
 	threeStopsChecked: true,
 };
 
-const reducer = (state = defaultState, action) => {
+const checkboxReducer = (state = defaultState, action) => {
 	switch (action.type) {
 		case 'checkbox/all':
-			console.log('clicked');
-			
 			if (
 				state.noStopsChecked &&
 				state.oneStopChecked &&
@@ -29,6 +26,7 @@ const reducer = (state = defaultState, action) => {
 			} else {
 				return {
 					...state,
+					
 					allChecked: true,
 					noStopsChecked: true,
 					oneStopChecked: true,
@@ -61,4 +59,4 @@ const reducer = (state = defaultState, action) => {
 	}
 };
 
-export default reducer;
+export default checkboxReducer;

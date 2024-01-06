@@ -6,17 +6,16 @@ import { useSelector } from 'react-redux';
 
 // import store from './index'
 
-import * as actions from '../../redux/actions';
+import * as actions from '../../redux/actions/filter';
 import classes from './filter.module.scss';
 
 export default function Filter() {
 	const dispatch = useDispatch();
 
-	const isChecked = useSelector((store) => store.allChecked);
-	const isNoStops = useSelector((store) => store.noStopsChecked);
-	const isOneStop = useSelector((store) => store.oneStopChecked);
-	const isTwoStops = useSelector((store) => store.twoStopsChecked);
-	const isThreeStops = useSelector((store) => store.threeStopsChecked);
+	const isNoStops = useSelector((store) => store.checkbox.noStopsChecked);
+	const isOneStop = useSelector((store) => store.checkbox.oneStopChecked);
+	const isTwoStops = useSelector((store) => store.checkbox.twoStopsChecked);
+	const isThreeStops = useSelector((store) => store.checkbox.threeStopsChecked);
 
 	return (
 		<aside>
@@ -24,9 +23,9 @@ export default function Filter() {
 			<form>
 				<Checkbox
 					checked={
-						!isNoStops || !isOneStop || !isTwoStops || !isThreeStops
-							? false
-							: isChecked
+						isNoStops && isOneStop && isTwoStops && isThreeStops
+							? true
+							: false
 					}
 					onChange={() => dispatch(actions.allChecked())}
 				>
