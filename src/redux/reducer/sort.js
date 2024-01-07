@@ -12,6 +12,9 @@ const filterReducer = (state = initialState, action) => {
 			return {
 				filter: 'shortest',
 			};
+		case 'filter/reset':
+			return { filter: null };
+
 		default:
 			return state;
 	}

@@ -5,3 +5,7 @@ export function cheapest() {
 export function shortest() {
 	return { type: 'filter/shortest' };
 }
+
+export function resetFilter() {
+	return {type: 'filter/reset'}
+}
