@@ -1,3 +1,3 @@
-import InfoFlightItem from './info-flight-Item';
+import InfoFlightItem from "./info-flight-Item";
 
 export default InfoFlightItem;

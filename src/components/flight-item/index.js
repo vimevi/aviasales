@@ -1,3 +1,3 @@
-import FlightItem from './flight-item';
+import FlightItem from "./flight-item";
 
 export default FlightItem;

@@ -1,3 +1,3 @@
-import FlightBox from './flight-box';
+import FlightBox from "./flight-box";
 
 export default FlightBox;
