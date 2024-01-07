@@ -1,42 +1,76 @@
 import store from '../redux/store';
 
-class ticketsService {
+class TicketsService {
 	_baseUrl = 'https://aviasales-test-api.kata.academy';
 	tickets = [];
+	searchId = null;
+
 	getSearchId = async () => {
 		try {
 			const res = await fetch(`${this._baseUrl}/search`);
 			const data = await res.json();
-			console.log('Search ID:', data.searchId);
-			return data.searchId;
+			this.searchId = data.searchId;
+			return this.searchId;
 		} catch (error) {
-			console.error('Error fetching data:', error);
 			throw error;
 		}
 	};
+
 	getTickets = async () => {
 		try {
-			const searchId = await this.getSearchId();
+			if (!this.searchId) {
+				await this.getSearchId();
+			}
+
 			const url = new URL(`${this._baseUrl}/tickets`);
-			url.searchParams.set('searchId', searchId);
-			const ticketsResponse = await fetch(url);
-			const ticketsData = await ticketsResponse.json();
-			this.tickets.push(ticketsData.tickets);
+			url.searchParams.set('searchId', this.searchId);
 
-			store.dispatch({ type: 'RECEIVE_SEARCH_ID', payload: searchId });
-			store.dispatch({ type: 'RECEIVE_TICKETS', payload: ticketsData.tickets });
+			const retryAttempts = 3;
+			let currentAttempt = 1;
 
-			if (ticketsData.stop) setTimeout(() => this.getTickets(), 2000);
-			console.log(ticketsData.stop);
-			console.log('Tickets:', this.tickets);
+			while (currentAttempt <= retryAttempts) {
+				try {
+					const ticketsResponse = await fetch(url);
+					const ticketsData = await ticketsResponse.json();
 
-			return ticketsData;
-		} catch (e) {
-			console.log(e);
+					this.tickets.push(...ticketsData.tickets);
+
+					store.dispatch({ type: 'RECEIVE_SEARCH_ID', payload: this.searchId });
+					store.dispatch({
+						type: 'RECEIVE_TICKETS',
+						payload: ticketsData.tickets,
+					});
+
+					if (!ticketsData.stop) {
+						setTimeout(() => this.getTickets(), 0);
+					}
+
+					// console.log(ticketsData.stop);
+					// console.log('Билеты:', this.tickets);
+
+					return ticketsData;
+				} catch (error) {
+					currentAttempt++;
+
+					if (currentAttempt <= retryAttempts) {
+						await new Promise((resolve) => setTimeout(resolve, 1000));
+					}
+				}
+			}
+
+			return { error: 'Достигнуто максимальное количество повторных попыток.' };
+		} catch (error) {
+
+			store.dispatch({ type: 'RECEIVE_SEARCH_ID', payload: this.searchId });
+			store.dispatch({
+				type: 'RECEIVE_TICKETS',
+				payload: [],
+				error: 'Ошибка при получении данных',
+			});
 		}
 	};
 }
 
-const ticketsServiceInstance = new ticketsService();
+const ticketsServiceInstance = new TicketsService();
 
 export default ticketsServiceInstance;

@@ -2,10 +2,9 @@ import React, { useEffect, useMemo } from 'react';
 import FlightItem from '../flight-item';
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert, Button, Spin } from 'antd';
+import classes from './flight-list.module.scss';
 
 import ticketsServiceInstance from '../../services/tickets-service';
-
-import classes from './flight-list.module.scss';
 
 export default function FlightList() {
 	const dispatch = useDispatch();
@@ -26,6 +25,10 @@ export default function FlightList() {
 	useEffect(() => {
 		ticketsServiceInstance.getTickets();
 	}, []);
+
+	const error = useSelector((state) => state.tickets.error);
+	const allTicketsLoaded = useSelector((state) => state.tickets.allTicketsLoaded);
+
 	const handleShowMore = () => {
 		dispatch({ type: 'UPDATE_DISPLAY_COUNT', payload: 5 });
 	};
@@ -37,7 +40,6 @@ export default function FlightList() {
 				(totalStops, segment) => totalStops + segment.stops.length,
 				0
 			);
-
 			return (
 				(isNoStops && stopsLength === 0) ||
 				(isOneStop && stopsLength === 1) ||
@@ -68,6 +70,19 @@ export default function FlightList() {
 
 	return (
 		<section>
+			{error && (
+				<Alert
+					className={classes['filter-info']}
+					showIcon={true}
+					type="error"
+					message={`Error: ${error}`}
+				/>
+			)}
+			{!allTicketsLoaded && (
+				<div className={classes['loading-field']}>
+					<Spin></Spin> <span>Загрузка билетов</span>
+				</div>
+			)}
 			{!loading && filteredTickets.length === 0 ? (
 				<Alert
 					className={classes['filter-info']}

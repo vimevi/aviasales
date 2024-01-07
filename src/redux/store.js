@@ -1,7 +1,4 @@
-import {
-	configureStore,
-	combineReducers,
-} from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 import ticketsReducer from './reducer/tickets';
 import checkboxReducer from './reducer/filter';
@@ -15,6 +12,11 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
 	reducer: rootReducer,
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			immutableCheck: false,
+			serializableCheck: false,
+		}),
 });
 
 export default store;
