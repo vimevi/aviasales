@@ -3,7 +3,6 @@ const initialState = {
   tickets: [],
   loading: true,
   displayCount: 5,
-  displayedTicketsCount: 5,
   allTicketsLoaded: false,
   totalExpectedTickets: 7001, // 7729
   error: null,
@@ -13,12 +12,12 @@ export const areAllTicketsLoaded = (state) => state.tickets.allTicketsLoaded;
 
 const ticketsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "RECEIVE_SEARCH_ID":
+    case "tickets/recieve-searchId":
       return {
         ...state,
         searchId: action.payload,
       };
-    case "RECEIVE_TICKETS":
+    case "tickets/recieve-tickets":
       if (action.error) {
         return {
           ...state,
@@ -35,7 +34,7 @@ const ticketsReducer = (state = initialState, action) => {
         allTicketsLoaded: updatedTickets.length >= state.totalExpectedTickets,
         error: null,
       };
-    case "UPDATE_DISPLAY_COUNT":
+    case "tickets/update-display-count":
       return {
         ...state,
         displayedTicketsCount: state.displayedTicketsCount + action.payload,

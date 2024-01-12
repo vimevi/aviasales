@@ -2,7 +2,6 @@ import store from "../redux/store";
 
 class TicketsService {
   _baseUrl = "https://aviasales-test-api.kata.academy";
-  tickets = [];
   searchId = null;
 
   getSearchId = async () => {
@@ -17,48 +16,45 @@ class TicketsService {
       if (!this.searchId) {
         await this.getSearchId();
       }
-
+      // console.log(this.searchId);
       const url = new URL(`${this._baseUrl}/tickets`);
       url.searchParams.set("searchId", this.searchId);
 
-      const retryAttempts = 3;
-      let currentAttempt = 1;
+      let shouldContinueFetching = true;
 
-      while (currentAttempt <= retryAttempts) {
+      while (shouldContinueFetching) {
         try {
           const ticketsResponse = await fetch(url);
           const ticketsData = await ticketsResponse.json();
 
-          this.tickets.push(...ticketsData.tickets);
-
-          store.dispatch({ type: "RECEIVE_SEARCH_ID", payload: this.searchId });
           store.dispatch({
-            type: "RECEIVE_TICKETS",
-            payload: ticketsData.tickets,
+            type: "tickets/recieve-searchId",
+            payload: this.searchId,
           });
 
-          if (!ticketsData.stop) {
+          store.dispatch({
+            type: "tickets/recieve-tickets",
+            payload: ticketsData.tickets,
+          });
+          console.log(store.getState());
+
+          if (ticketsData.stop) {
+            shouldContinueFetching = false;
+          } else {
             setTimeout(() => this.getTickets(), 0);
+            return ticketsData;
           }
-
-          // console.log(ticketsData.stop);
-          // console.log('Билеты:', this.tickets);
-
-          return ticketsData;
         } catch (error) {
-          currentAttempt++;
-
-          if (currentAttempt <= retryAttempts) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-          }
+          await new Promise((resolve) => setTimeout(resolve, 0));
         }
       }
-
-      return { error: "Достигнуто максимальное количество повторных попыток." };
     } catch (error) {
-      store.dispatch({ type: "RECEIVE_SEARCH_ID", payload: this.searchId });
       store.dispatch({
-        type: "RECEIVE_TICKETS",
+        type: "tickets/recieve-searchId",
+        payload: this.searchId,
+      });
+      store.dispatch({
+        type: "tickets/recieve-tickets",
         payload: [],
         error: "Ошибка при получении данных",
       });

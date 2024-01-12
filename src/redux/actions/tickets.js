@@ -1,12 +1,17 @@
-const FETCH_TICKETS_SUCCESS = "tickets/fetchSuccess";
-const FETCH_TICKETS_FAILURE = "tickets/fetchFailure";
+const GET_TICKETS = "tickets/recieve-tickets";
+const GET_SEARCHID = "tickets/recieve-searchId";
+const UPDATE_DISPLAYCOUNT = "tickets/update-display-count";
 
-export const fetchTicketsSuccess = (tickets) => ({
-  type: FETCH_TICKETS_SUCCESS,
+export const fetchTickets = (tickets) => ({
+  type: GET_TICKETS,
   payload: tickets,
 });
 
-export const fetchTicketsFailure = (error) => ({
-  type: FETCH_TICKETS_FAILURE,
+export const fetchSearchId = (error) => ({
+  type: GET_SEARCHID,
+  payload: error,
+});
+export const updateDisplayCount = (error) => ({
+  type: UPDATE_DISPLAYCOUNT,
   payload: error,
 });
