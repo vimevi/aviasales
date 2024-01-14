@@ -1,16 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import FlightItem from "../flight-item";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Spin } from "antd";
 import classes from "./flight-list.module.scss";
 
 import filterFlights from "../../utils/filtering";
 import sortFlights from "../../utils/sorting";
 
-import ticketsServiceInstance from "../../services/tickets-service";
+import { fetchTickets } from "../../redux/actions/tickets";
 
 export default function FlightList() {
   const [displayedTicketsCount, setDisplayedTicketsCount] = useState(5);
+  const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.tickets.loading);
   const currentFilter = useSelector((state) => state.filter.filter);
@@ -22,10 +23,9 @@ export default function FlightList() {
     twoStops: useSelector((store) => store.checkbox.twoStopsChecked),
     threeStops: useSelector((store) => store.checkbox.threeStopsChecked),
   };
-
   useEffect(() => {
-    ticketsServiceInstance.getTickets();
-  }, []);
+    dispatch(fetchTickets());
+  }, [dispatch]);
 
   const error = useSelector((state) => state.tickets.error);
   const allTicketsLoaded = useSelector(

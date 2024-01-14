@@ -1,4 +1,4 @@
-import store from "../redux/store";
+import { fetchTickets } from "../redux/actions/tickets";
 
 class TicketsService {
   _baseUrl = "https://aviasales-test-api.kata.academy";
@@ -11,12 +11,11 @@ class TicketsService {
     return this.searchId;
   };
 
-  getTickets = async () => {
+  getTickets = async (dispatch) => {
     try {
       if (!this.searchId) {
         await this.getSearchId();
       }
-      // console.log(this.searchId);
       const url = new URL(`${this._baseUrl}/tickets`);
       url.searchParams.set("searchId", this.searchId);
 
@@ -26,22 +25,21 @@ class TicketsService {
         try {
           const ticketsResponse = await fetch(url);
           const ticketsData = await ticketsResponse.json();
-
-          store.dispatch({
+          console.log(ticketsData);
+          dispatch({
             type: "tickets/recieve-searchId",
             payload: this.searchId,
           });
 
-          store.dispatch({
+          dispatch({
             type: "tickets/recieve-tickets",
             payload: ticketsData.tickets,
           });
-          console.log(store.getState());
 
           if (ticketsData.stop) {
             shouldContinueFetching = false;
           } else {
-            setTimeout(() => this.getTickets(), 0);
+            setTimeout(() => dispatch(fetchTickets()), 0);
             return ticketsData;
           }
         } catch (error) {
@@ -49,11 +47,11 @@ class TicketsService {
         }
       }
     } catch (error) {
-      store.dispatch({
+      dispatch({
         type: "tickets/recieve-searchId",
         payload: this.searchId,
       });
-      store.dispatch({
+      dispatch({
         type: "tickets/recieve-tickets",
         payload: [],
         error: "Ошибка при получении данных",
