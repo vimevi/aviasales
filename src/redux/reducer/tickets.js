@@ -39,6 +39,12 @@ const ticketsReducer = (state = initialState, action) => {
         ...state,
         displayedTicketsCount: state.displayedTicketsCount + action.payload,
       };
+    case "tickets/error":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

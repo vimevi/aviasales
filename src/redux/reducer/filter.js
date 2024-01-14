@@ -1,3 +1,11 @@
+// import {
+//   ALL_CHECKED,
+//   NO_STOPS_CHECKED,
+//   ONE_STOP_CHECKED,
+//   TWO_STOPS_CHECKED,
+//   THREE_STOPS_CHECKED,
+// } from "../actions/filter";
+
 const defaultState = {
   allChecked: true,
   noStopsChecked: true,

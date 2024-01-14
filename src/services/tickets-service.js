@@ -1,5 +1,3 @@
-import { fetchTickets } from "../redux/actions/tickets";
-
 class TicketsService {
   _baseUrl = "https://aviasales-test-api.kata.academy";
   searchId = null;
@@ -19,13 +17,11 @@ class TicketsService {
       const url = new URL(`${this._baseUrl}/tickets`);
       url.searchParams.set("searchId", this.searchId);
 
-      let shouldContinueFetching = true;
-
-      while (shouldContinueFetching) {
+      const fetchTicketsRecursively = async (shouldContinueFetching) => {
         try {
           const ticketsResponse = await fetch(url);
           const ticketsData = await ticketsResponse.json();
-          console.log(ticketsData);
+
           dispatch({
             type: "tickets/recieve-searchId",
             payload: this.searchId,
@@ -37,15 +33,20 @@ class TicketsService {
           });
 
           if (ticketsData.stop) {
-            shouldContinueFetching = false;
+            shouldContinueFetching(false);
           } else {
-            setTimeout(() => dispatch(fetchTickets()), 0);
-            return ticketsData;
+            setTimeout(fetchTicketsRecursively, 0);
           }
         } catch (error) {
+          dispatch({
+            type: "tickets/error",
+            payload: "Ошибка при получении данных",
+          });
           await new Promise((resolve) => setTimeout(resolve, 0));
         }
-      }
+      };
+
+      fetchTicketsRecursively();
     } catch (error) {
       dispatch({
         type: "tickets/recieve-searchId",

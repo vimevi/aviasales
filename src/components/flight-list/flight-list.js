@@ -53,7 +53,7 @@ export default function FlightList() {
           message={`Error: ${error}`}
         />
       )}
-      {!allTicketsLoaded && (
+      {!allTicketsLoaded && !error && (
         <div className={classes["loading-field"]}>
           <Spin></Spin> <span>Загрузка билетов</span>
         </div>
