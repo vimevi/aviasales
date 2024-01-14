@@ -27,15 +27,16 @@ class TicketsService {
         try {
           const ticketsResponse = await fetch(url);
           const ticketsData = await ticketsResponse.json();
-          dispatch({
-            type: "tickets/recieve-searchId",
-            payload: this.searchId,
-          });
 
           dispatch({
             type: "tickets/recieve-tickets",
             payload: ticketsData.tickets,
           });
+
+          if (ticketsResponse.status === 500) {
+            setTimeout(fetchTicketsRecursively, 1000);
+            return;
+          }
 
           if (!ticketsData.stop) {
             setTimeout(fetchTicketsRecursively, 0);
@@ -43,7 +44,7 @@ class TicketsService {
         } catch (error) {
           dispatch({
             type: "tickets/error",
-            payload: "Ошибка при получении данных",
+            payload: `"Ошибка при получении данных"${error}`,
           });
         }
       };
