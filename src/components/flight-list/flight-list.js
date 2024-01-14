@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import FlightItem from "../flight-item";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Button, Spin } from "antd";
+import { Alert, Button, Spin, Anchor, message } from "antd";
 import classes from "./flight-list.module.scss";
 
 import filterFlights from "../../utils/filtering";
@@ -32,6 +32,15 @@ export default function FlightList() {
     (state) => state.tickets.allTicketsLoaded,
   );
 
+  const showMessage = (error) => {
+    message.error(error);
+  };
+  useEffect(() => {
+    if (error) {
+      showMessage(error);
+    }
+  }, [error]);
+
   const handleShowMore = () => {
     setDisplayedTicketsCount((prevCount) => prevCount + 5);
   };
@@ -45,14 +54,7 @@ export default function FlightList() {
 
   return (
     <section>
-      {error && (
-        <Alert
-          className={classes["filter-info"]}
-          showIcon={true}
-          type="error"
-          message={`Error: ${error}`}
-        />
-      )}
+      <Anchor />
       {!allTicketsLoaded && !error && (
         <div className={classes["loading-field"]}>
           <Spin></Spin> <span>Загрузка билетов</span>

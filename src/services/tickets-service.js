@@ -3,10 +3,15 @@ class TicketsService {
   searchId = null;
 
   getSearchId = async () => {
-    const res = await fetch(`${this._baseUrl}/search`);
-    const data = await res.json();
-    this.searchId = data.searchId;
-    return this.searchId;
+    try {
+      const res = await fetch(`${this._baseUrl}/search`);
+      const data = await res.json();
+      this.searchId = data.searchId;
+      return this.searchId;
+    } catch (error) {
+      console.error("Error while fetching searchId:", error);
+      throw error;
+    }
   };
 
   getTickets = async (dispatch) => {
@@ -14,14 +19,15 @@ class TicketsService {
       if (!this.searchId) {
         await this.getSearchId();
       }
+
       const url = new URL(`${this._baseUrl}/tickets`);
       url.searchParams.set("searchId", this.searchId);
 
-      const fetchTicketsRecursively = async (shouldContinueFetching) => {
+      const fetchTicketsRecursively = async () => {
         try {
           const ticketsResponse = await fetch(url);
           const ticketsData = await ticketsResponse.json();
-
+          console.log(ticketsData);
           dispatch({
             type: "tickets/recieve-searchId",
             payload: this.searchId,
@@ -32,9 +38,7 @@ class TicketsService {
             payload: ticketsData.tickets,
           });
 
-          if (ticketsData.stop) {
-            shouldContinueFetching(false);
-          } else {
+          if (!ticketsData.stop) {
             setTimeout(fetchTicketsRecursively, 0);
           }
         } catch (error) {
@@ -42,11 +46,10 @@ class TicketsService {
             type: "tickets/error",
             payload: "Ошибка при получении данных",
           });
-          await new Promise((resolve) => setTimeout(resolve, 0));
         }
       };
 
-      fetchTicketsRecursively();
+      await fetchTicketsRecursively();
     } catch (error) {
       dispatch({
         type: "tickets/recieve-searchId",
@@ -57,10 +60,9 @@ class TicketsService {
         payload: [],
         error: "Ошибка при получении данных",
       });
+      console.error("Error in getTickets:", error);
     }
   };
 }
 
-const ticketsServiceInstance = new TicketsService();
-
-export default ticketsServiceInstance;
+export default new TicketsService();
