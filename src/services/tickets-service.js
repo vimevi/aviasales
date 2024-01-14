@@ -27,7 +27,6 @@ class TicketsService {
         try {
           const ticketsResponse = await fetch(url);
           const ticketsData = await ticketsResponse.json();
-          console.log(ticketsData);
           dispatch({
             type: "tickets/recieve-searchId",
             payload: this.searchId,
